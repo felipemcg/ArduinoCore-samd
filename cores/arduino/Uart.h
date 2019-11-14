@@ -41,6 +41,8 @@ class Uart : public HardwareSerial
     using Print::write; // pull in write(str) and write(buf, size) from Print
 
     void IrqHandler();
+    bool LF_recv(); 
+    void rst_LF_recv();
 
     operator bool() { return true; }
 
