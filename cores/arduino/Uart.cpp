@@ -24,6 +24,12 @@
 #define NO_CTS_PIN 255
 #define RTS_RX_THRESHOLD 10
 
+//Used to read a byte received from UART. 
+static volatile uint8_t rec_byte;
+
+//Used to indicate when a Newline (LF) character has been received. 
+static bool LF_recv = false;
+
 Uart::Uart(SERCOM *_s, uint8_t _pinRX, uint8_t _pinTX, SercomRXPad _padRX, SercomUartTXPad _padTX) :
   Uart(_s, _pinRX, _pinTX, _padRX, _padTX, NO_RTS_PIN, NO_CTS_PIN)
 {
@@ -96,9 +102,21 @@ void Uart::IrqHandler()
 
     sercom->clearFrameErrorUART();
   }
-
+  
+  //Check if data is available
   if (sercom->availableDataUART()) {
-    rxBuffer.store_char(sercom->readDataUART());
+    
+    //Read byte 
+    rec_byte = sercom->readDataUART();
+    
+    //Store data into ring buffer (1 byte) 
+    rxBuffer.store_char(rec_byte);
+    
+    //Check if '\n' has been received. 
+    if(rec_byte == '\n')
+    {
+      LF_recv = true;
+    }
 
     if (uc_pinRTS != NO_RTS_PIN) {
       // RX buffer space is below the threshold, de-assert RTS
@@ -124,6 +142,16 @@ void Uart::IrqHandler()
     // TODO: if (sercom->isParityErrorUART()) ....
     sercom->clearStatusUART();
   }
+}
+
+bool Uart::LF_recv()
+{
+  return LF_recv;
+}
+
+void Uart::rst_LF_recv()
+{
+  LF_recv = false;
 }
 
 int Uart::available()
