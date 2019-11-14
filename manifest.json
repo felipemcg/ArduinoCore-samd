@@ -1,0 +1,7 @@
+"framework-atmelsamdpropietario": [
+    {
+      "system": "*", 
+      "url": "https://github.com/felipemcg/ArduinoCore-samd/archive/1.8.4.tar.gz", 
+      "version": "1.8.4"
+    },
+  ]
