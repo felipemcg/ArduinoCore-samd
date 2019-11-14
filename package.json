@@ -1,0 +1,6 @@
+{
+    "name": "framework-arduinoatmelsamdpropietario",
+    "description": "Arduino Core Ateml SAMD, modificado",
+    "url": "https://github.com/felipemcg/ArduinoCore-samd.git",
+    "version": "1.8.4"
+}
